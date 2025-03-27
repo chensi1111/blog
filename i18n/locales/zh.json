@@ -1,0 +1,79 @@
+{
+    "header": {
+        "index": "首頁",
+        "about": "關於",
+        "experience": "經驗",
+        "skills": "技能",
+        "projects": "專案"
+    },
+    "about":{
+        "title":"關於",
+        "introduce":"我是一名前端工程師，對於前端技術有著濃厚的興趣，喜歡學習新技術，並且樂於分享。"
+    },
+    "experience":{
+        "title":"經驗",
+        "content":[
+            {
+                "company":"大極科技有限公司",
+                "introduce":"**支付軟體維護 (Vue2)**: 負責維護已上線的支付軟體，確保系統穩定運行，並進行必要的功能優化與性能改進。\n**即時聊天軟體開發 (Vue3)**: 開發基於 Vue3 的即時聊天應用程式，整合 WebSocket 技術實現即時通訊功能，確保用戶能夠進行高效互動。\n**動態 3D 頁面設計**: 使用 Three.js 設計動態且具有互動性的 3D 頁面，提升用戶體驗。\n**多語系支持 (i18n)**: 利用 i18n 技術實現應用程式的多語言轉換，滿足全球用戶的需求。"
+            },
+            {
+                "company":"自學",
+                "introduce":"我通過自學深入學習了多個現代前端技術，包括 TypeScript、Vue 3、Nuxt 3 等框架，並結合了 Sass、Tailwind CSS 等工具來打造響應式且具備高可維護性的網站。並在學習的過程中，透過Firebase 來實踐後端技術，提升了全端開發的能力。"
+            },
+            {
+                "company":"前端網頁設計與程式技術實作班",
+                "introduce":"透過在職專班的訓練，我深入掌握了前端開發的基礎知識，從 HTML、CSS 到 JavaScript 和 jQuery，並學會了使用 Bootstrap 進行快速原型設計。"
+            }
+        ]
+        
+    },
+    "skill":{
+        "title":"技能",
+        "subTitle":[
+            {
+                "name":"基礎網頁技術"
+            },
+            {
+                "name":"前端框架與庫"
+            },
+            {
+                "name":"UI庫"
+            },
+            {
+                "name":"CSS預處理與框架"
+            },
+            {
+                "name":"測試與版本控制工具"
+            },
+            {
+                "name":"其他"
+            }
+        ]
+    },
+    "project":{
+        "title":"Projects",
+        "content":[
+            {
+                "name":"個人部落格",
+                "introduce":"了解我的小地方"
+            },
+            {
+                "name":"生日吹蠟燭",
+                "introduce":"使用Three.js建立3D模型，並透過偵測聲音大小來模擬吹蠟燭。"
+            },
+            {
+                "name":"天氣小幫手",
+                "introduce":"使用nuxt3所打造的天氣查詢網站，並串接中央氣象局API。"
+            },
+            {
+                "name":"電商服飾網站",
+                "introduce":"使用Vue3及typeScript撰寫的電商網站，並結合Firebase打造會員系統。"
+            },
+            {
+                "name":"訂房網站",
+                "introduce":"使用Vue3打造的訂房網站，並結合Firebase打造會員系統。"
+            }
+    ]
+    }
+}
