@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false},
   modules: ['@element-plus/nuxt','@nuxtjs/i18n'],
   i18n: {
-    defaultLocale: 'EN',
+    defaultLocale: 'ZH',
     locales: [
       {
         code: 'EN',
@@ -21,7 +21,18 @@ export default defineNuxtConfig({
     lazy: true,
   },
   app: {
-    baseURL: process.env.NODE_ENV === 'production' ? '/blog/' : '/',
+    head: {
+      title: 'My Blog',
+      meta: [
+        { name: 'description', content: 'Welcome to my website.' },
+        { name: 'keywords', content: 'Nuxt3, Vue, TypeScript,Three,js' },
+        { name: 'author', content: 'Andy Chen' },
+      ],
+      link: [
+        { rel: 'icon', href: '/blog/favicon.ico' }, 
+      ],
+    },
+    baseURL: '/blog/',
     buildAssetsDir: '/static/'
-  }
+  },
 })

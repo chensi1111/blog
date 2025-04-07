@@ -7,8 +7,8 @@
       :key="exp.name"
       :class="{ move: exp.move }"
       :ref="el => expRef[index] = el as HTMLDivElement"
-      @mouseenter="(exp.color = '#ff67ff'), (exp.width = '2')"
-      @mouseleave="(exp.color = '#D5D5D5'), (exp.width = '1')"
+      @mouseenter="handleMouseEnter(exp)"
+      @mouseleave="handleMouseLeave(exp)"
     >
       <div class="time">
         <div
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
+let observer: IntersectionObserver;
 const titleRef = ref<HTMLDivElement>();
 const expRef = ref<(HTMLDivElement | null)[]>([]);
 const titleMove = ref(false);
@@ -80,7 +81,18 @@ const experiences = ref([
     width: "1",
   },
 ]);
-
+function handleMouseEnter(exp:any) {
+  if(window.innerWidth >= 768){
+    exp.color = "#ff67ff";
+    exp.width = "2";
+  }
+}
+function handleMouseLeave(exp:any) {
+  if(window.innerWidth >= 768){
+  exp.color = "#D5D5D5";
+  exp.width = "1";
+}
+}
 const getSvgIcon = (number: any, color: string, width: string) => {
   switch (number) {
     case 1:
@@ -132,15 +144,18 @@ function formatText(text: string) {
 
   return text;
 }
+function handleResizeIntersectionObserver() {
+  if (window.innerWidth <= 768) {
+    if (observer) {
+      observer.disconnect();
+    }
+    observer = new IntersectionObserver(handleIntersect, {
+      root: null,
+      rootMargin: "0px 0px -100px 0px", 
+      threshold: 0,
+    });
 
-onMounted(() => {
-  const observer = new IntersectionObserver(handleIntersect, {
-    root: null,
-    rootMargin: "0px 0px -200px 0px",
-    threshold: 0,
-  });
-
-  if (titleRef.value) {
+    if (titleRef.value) {
     observer.observe(titleRef.value);
   }
 
@@ -149,7 +164,39 @@ onMounted(() => {
       observer.observe(expElement);
     }
   });
+  } else {
+    if (observer) {
+      observer.disconnect();
+    }
+    observer = new IntersectionObserver(handleIntersect, {
+      root: null,
+      rootMargin: "0px 0px -200px 0px", 
+      threshold: 0,
+    });
+
+    if (titleRef.value) {
+    observer.observe(titleRef.value);
+  }
+
+  expRef.value.forEach((expElement) => {
+    if (expElement) {
+      observer.observe(expElement);
+    }
+  });
+  }
+}
+onMounted(() => {
+  handleResizeIntersectionObserver()
+  window.addEventListener('resize', () => {
+    handleResizeIntersectionObserver()
+  });
 });
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', () => {
+    handleResizeIntersectionObserver()
+  });
+});
+
 </script>
 <style scoped>
 /* *{
@@ -173,10 +220,6 @@ onMounted(() => {
   align-items: center;
   min-height: 150px;
   margin-bottom: 20px;
-}
-
-.EXPlist:hover .time,.EXPlist:hover .introduce {
-  color: white;
 }
 
 .time {
@@ -214,9 +257,7 @@ onMounted(() => {
   transform-origin: left;
   transition: transform 0.5s;
 }
-.EXPlist:hover .name::before {
-  transform: scaleX(1);
-}
+
 .introduce {
   color: rgb(170, 170, 170);
   margin-top: 15px;
@@ -228,6 +269,7 @@ onMounted(() => {
   opacity: 0;
   transition: transform 1s ease-in-out, opacity 1s ease-in-out;
 }
+
 .move {
   transform: translateX(0);
   opacity: 1;
@@ -249,6 +291,14 @@ onMounted(() => {
   padding: 4px 8px;
   margin-top: 15px;
   margin-right: 10px;
+}
+@media (hover: hover) and (pointer: fine) {
+.EXPlist:hover .time,.EXPlist:hover .introduce {
+  color: white;
+}
+.EXPlist:hover .name::before {
+  transform: scaleX(1);
+}
 }
 @media screen and (max-width: 1200px){
     .EXPContainer{

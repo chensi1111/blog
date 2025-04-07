@@ -1,8 +1,8 @@
 {
     "header": {
-        "index": "Index",
+        "index": "Home",
         "about": "About",
-        "experience": "Experience",
+        "experience": "Exp",
         "skills": "Skills",
         "projects": "Projects"
     },

@@ -132,9 +132,7 @@ onBeforeUnmount(() => {
     transform-origin: left;
     transition: transform 0.5s;
 }
-.nav:hover::before{
-    transform: scaleX(1);
-}
+
 .nav .el-icon{
  margin-left: 3px
 }
@@ -146,11 +144,15 @@ onBeforeUnmount(() => {
     color: white;
     cursor: pointer;
 }
-
+@media (hover: hover) and (pointer: fine) {
+  .nav:hover::before {
+    transform: scaleX(1);
+  }
+}
 @media screen and (max-width: 768px){
     .headerContainer{
         min-width: 380px;
-        padding: 8px 15px;
+        padding: 5px 10px;
     }
     .open,.close{
         font-size: 20px;
@@ -163,7 +165,6 @@ onBeforeUnmount(() => {
     .headerContainer{
         min-width: 280px;
         height: 40px;
-        padding: 5px 10px;
     }
     .open,.close{
         font-size: 15px;

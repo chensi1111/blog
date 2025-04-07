@@ -11,6 +11,7 @@ const titleRef = ref<HTMLDivElement>();
 const introduceRef = ref<HTMLDivElement>();
 const titleMove=ref(false)
 const introduceMove=ref(false)
+let observer: IntersectionObserver;
 
 function handleIntersect(entries: IntersectionObserverEntry[]) {
     entries.forEach((entry) => {
@@ -23,19 +24,51 @@ function handleIntersect(entries: IntersectionObserverEntry[]) {
     });
 }
 
-onMounted(() => {
-  const observer = new IntersectionObserver(handleIntersect, {
-    root: null, 
-    rootMargin: "0px 0px -200px 0px", 
-    threshold: 0, 
-  });
+function handleResizeIntersectionObserver() {
+  if (window.innerWidth <= 768) {
+    if (observer) {
+      observer.disconnect();
+    }
+    observer = new IntersectionObserver(handleIntersect, {
+      root: null,
+      rootMargin: "0px 0px -100px 0px", 
+      threshold: 0,
+    });
 
-  if (titleRef.value) {
-    observer.observe(titleRef.value);
+    if (titleRef.value) {
+      observer.observe(titleRef.value);
+    }
+    if (introduceRef.value) {
+      observer.observe(introduceRef.value);
+    }
+  } else {
+    if (observer) {
+      observer.disconnect();
+    }
+    observer = new IntersectionObserver(handleIntersect, {
+      root: null,
+      rootMargin: "0px 0px -200px 0px", 
+      threshold: 0,
+    });
+
+    if (titleRef.value) {
+      observer.observe(titleRef.value);
+    }
+    if (introduceRef.value) {
+      observer.observe(introduceRef.value);
+    }
   }
-  if (introduceRef.value) {
-    observer.observe(introduceRef.value);
-  }
+}
+onMounted(() => {
+  handleResizeIntersectionObserver()
+  window.addEventListener('resize', () => {
+    handleResizeIntersectionObserver()
+  });
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', () => {
+    handleResizeIntersectionObserver()
+  });
 });
 </script>
 <style scoped>
