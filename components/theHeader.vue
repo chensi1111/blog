@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
     z-index: 100;
     border: 1px solid rgb(170, 170, 170);
     left: 50%;
-    top: 50px;
+    top: 40px;
     transform: translateX(-50%);
     transition: 0.5s ease-in-out;
 }

@@ -43,38 +43,43 @@
         </div>
       </div>
     </div>
-    <div class="projectInfo" v-show="isShowProjectInfo">
+    <div class="projectInfo" v-if="isShowProjectInfo" ref="projectInfoRef">
       <div class="cancel" @click="isShowProjectInfo = false">X</div>
       <div class="projectInfos">
         <div class="projectPic">
-          <div class="projectWeb"><img :src="projectInfo.web" /></div>
-          <div class="projectPhone"><img :src="projectInfo.phone" /></div>
+          <div class="projectWeb">
+            <span>Web</span><img :src="projectInfo.web" />
+          </div>
+          <div class="projectPhone">
+            <span>Phone</span><img :src="projectInfo.phone" />
+          </div>
         </div>
         <div class="projectIntroduce">
           <div class="projectDate">
-            <div class="projectTitle">專案日期 : </div>
+            <div class="projectTitle">專案日期 :</div>
             <span>{{ projectInfo.time }}</span>
           </div>
           <div class="projectName">
-            <div class="projectTitle">專案名稱 : </div>
+            <div class="projectTitle">專案名稱 :</div>
             <span>{{ projectInfo.name }}</span>
           </div>
           <div class="projectLinks">
-            <div class="projectTitle">專案連結 : </div>
-            <a :href="projectInfo.link" target="_blank">Demo</a><a :href="projectInfo.github" target="_blank">Github</a>
+            <div class="projectTitle">專案連結 :</div>
+            <a :href="projectInfo.link" target="_blank">Demo</a
+            ><a :href="projectInfo.github" target="_blank">Github</a>
           </div>
           <div class="projectSkills">
-            <div class="projectTitle">專案技能 : </div>
+            <div class="projectTitle">專案技能 :</div>
             <span v-for="skill in projectInfo.skill">
               <div>{{ skill }}</div>
             </span>
           </div>
           <div class="projectDescribe">
-            <div class="projectTitle">專案簡介 : </div>
+            <div class="projectTitle">專案簡介 :</div>
             <span>{{ projectInfo.introduce }}</span>
           </div>
           <div class="projectExplain">
-            <div class="projectTitle">專案說明 : </div>
+            <div class="projectTitle">專案說明 :</div>
             <span>{{ projectInfo.explain }}</span>
           </div>
         </div>
@@ -199,6 +204,29 @@ function handleResizeIntersectionObserver() {
     }
   }
 }
+
+const projectInfoRef = ref<HTMLElement>();
+
+function handleClickOutside(event: MouseEvent) {
+  const projectInfoEl = projectInfoRef.value;
+  if (!projectInfoEl) return;
+
+  if (!projectInfoEl.contains(event.target as Node)) {
+    isShowProjectInfo.value = false;
+  }
+}
+watch(isShowProjectInfo, (newVal) => {
+  if (newVal) {
+    nextTick(() => {
+      setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+      }, 100);
+    });
+  } else {
+    document.removeEventListener('click', handleClickOutside);
+  }
+});
+
 onMounted(() => {
   handleResizeIntersectionObserver();
   window.addEventListener("resize", () => {
@@ -393,7 +421,11 @@ img {
 .projectPhone {
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+}
+.projectWeb span,
+.projectPhone span {
+  margin-bottom: 10px;
 }
 .projectWeb img {
   width: 100%;
@@ -401,7 +433,7 @@ img {
   object-fit: cover;
 }
 .projectPhone img {
-  width: 50%;
+  width: 30%;
   height: 100%;
   object-fit: cover;
 }
@@ -415,14 +447,19 @@ img {
   gap: 20px;
   border-left: 2px solid rgb(150, 150, 150);
 }
-.projectTitle{
+.projectTitle {
   font-weight: bold;
   white-space: nowrap;
 }
-.projectName,.projectDate,.projectLinks,.projectSkills,.projectDescribe,.projectExplain{
+.projectName,
+.projectDate,
+.projectLinks,
+.projectSkills,
+.projectDescribe,
+.projectExplain {
   display: flex;
   align-items: start;
-  gap: 5px;
+  gap: 10px;
 }
 .projectLinks a {
   cursor: pointer;
@@ -446,23 +483,19 @@ img {
   width: fit-content;
 }
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-  border-radius: 10px;
+  background-color: black;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: #888;
-  border-radius: 10px;
-  border: 1px solid #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
+  background-color: #c5c5c5;
 }
 @keyframes borderColorAnimation {
   0% {
@@ -479,9 +512,15 @@ img {
   .projectContainer {
     width: 70%;
   }
+  .projectInfo {
+    width: 70%;
+  }
 }
 @media screen and (max-width: 1024px) {
   .projectContainer {
+    width: 85%;
+  }
+  .projectInfo {
     width: 85%;
   }
   .title {
@@ -495,6 +534,23 @@ img {
 @media screen and (max-width: 768px) {
   .projectContainer {
     width: 90%;
+  }
+  .projectInfo {
+    width: 90%;
+    font-size: 14px;
+  }
+  .projectInfos {
+    flex-direction: column;
+  }
+  .projectPic {
+    width: 100%;
+    order: 2;
+  }
+  .projectIntroduce {
+    width: 100%;
+    padding: 15px;
+    margin-left: 0px;
+    border-left: 0px solid rgb(150, 150, 150);
   }
   .title {
     font-size: 25px;

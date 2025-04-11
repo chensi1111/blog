@@ -8,7 +8,7 @@
     },
     "about":{
         "title":"關於",
-        "introduce":"我是一名前端工程師，對於前端技術有著濃厚的興趣，喜歡學習新技術，並且樂於分享。"
+        "introduce":"我是一名前端工程師，擁有一年實務開發經驗，熟悉使用 Vue 3 進行現代網頁開發。目前正積極學習 React，以拓展前端技術視野，邁向更完整的全端能力。曾參與即時通訊系統、3D 互動頁面與多語系應用等專案。"
     },
     "experience":{
         "title":"經驗",
@@ -56,24 +56,29 @@
         "content":[
             {
                 "name":"個人部落格",
-                "introduce":"了解我的小地方",
-                "explain":"使用Three.js建立一個會在3D空間隨機移動，根據深度改變顏色以及在距離相近時連線的粒子系統，並且可以透過滑鼠來推開粒子。"
+                "introduce":"個人介紹及作品集。",
+                "explain":"使用Blender及Three.js建立3D模型，透過Raycaser實現與物體互動產生動畫效果。可以透過i18n切換中英文。"
             },
             {
                 "name":"生日吹蠟燭",
-                "introduce":"使用Three.js建立3D模型，並透過偵測聲音大小來模擬吹蠟燭。"
+                "introduce":"使用Three.js建立3D模型，並透過偵測聲音大小來模擬吹蠟燭。",
+                "explain":"使用Blender及Three.js建立3D模型，透過偵測聲音的大小可以影響蠟燭火光的抖動及熄滅，將網址參數作為收禮人及禮物的參數。"
             },
             {
                 "name":"天氣小幫手",
-                "introduce":"使用nuxt3所打造的天氣查詢網站，並串接中央氣象局API。"
+                "introduce":"使用nuxt3所打造的天氣查詢網站，並串接中央氣象局API。",
+                "explain":"使用SVG製作台灣地圖，並串接中央氣象局API來獲取各縣市氣象資料。"
+
             },
             {
                 "name":"電商服飾網站",
-                "introduce":"使用Vue3及typeScript撰寫的電商網站，並結合Firebase打造會員系統。"
+                "introduce":"使用Vue3及typeScript撰寫的電商網站，並結合Firebase打造會員系統。",
+                "explain":"利用Firebase中的Authentication製作會員系統，Firestore Database及Storage來儲存商品資料及訂單紀錄。"
             },
             {
                 "name":"訂房網站",
-                "introduce":"使用Vue3打造的訂房網站，並結合Firebase打造會員系統。"
+                "introduce":"使用Vue3打造的訂房網站，並結合Firebase打造會員系統。",
+                "explain":"利用Firebase中的Authentication製作會員系統，Firestore Database及Storage來儲存訂單紀錄。"
             }
     ]
     }

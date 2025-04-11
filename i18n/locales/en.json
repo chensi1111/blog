@@ -8,7 +8,7 @@
     },
     "about": {
         "title": "About",
-        "introduce": "我是一名前端工程師，對於前端技術有著濃厚的興趣，喜歡學習新技術，並且樂於分享。"
+        "introduce": "I am a front-end developer with one year of hands-on experience, proficient in modern web development using Vue 3. I am currently learning React to broaden my front-end skill set and move toward a more full-stack capability. I have participated in projects such as real-time chat systems, interactive 3D web pages, and multilingual applications."
     },
     "experience": {
         "title": "Experience",
@@ -55,23 +55,28 @@
         "content": [
             {
                 "name": "Personal Blog",
-                "introduce": "A place to learn more about me"
+                "introduce": "Personal introduction and portfolio.",
+                "explain": "Created 3D models using Blender and Three.js, and implemented interactive animations through Raycaster.Supports switching between Chinese and English using i18n."
             },
             {
                 "name": "Birthday Candle Blowing",
-                "introduce": "Created a 3D model using Three.js and simulated blowing out candles by detecting sound levels."
+                "introduce": "Built 3D models using Three.js and simulated blowing out candles by detecting sound volume.",
+                "explain": "Created 3D models using Blender and Three.js. The candle flame flickers and extinguishes based on the detected sound volume. URL parameters are used to specify the recipient and the gift."
             },
             {
-                "name": "Weather Assistant",
-                "introduce": "A weather query website built with Nuxt3, integrated with the Central Weather Bureau API."
+                "name": "Weather Helper",
+                "introduce": "A weather query website built with Nuxt3, integrated with the Central Weather Bureau API.",
+                "explain": "Used SVG to create a Taiwan map and integrated the Central Weather Bureau API to fetch weather data for each county and city."
             },
             {
-                "name": "E-commerce Clothing Website",
-                "introduce": "An e-commerce website written with Vue3 and TypeScript, integrating Firebase for the membership system."
+                "name": "E-commerce Fashion Website",
+                "introduce": "An e-commerce website built with Vue3 and TypeScript, integrated with Firebase for the member system.",
+                "explain": "Used Firebase Authentication for the member system, Firestore Database and Storage to store product data and order records."
             },
             {
                 "name": "Hotel Booking Website",
-                "introduce": "A hotel booking website built with Vue3, integrated with Firebase for the membership system."
+                "introduce": "A hotel booking website built with Vue3, integrated with Firebase for the member system.",
+                "explain": "Used Firebase Authentication for the member system, Firestore Database and Storage to store order records."
             }
         ]
     }

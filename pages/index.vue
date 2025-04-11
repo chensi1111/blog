@@ -1,7 +1,16 @@
 <template>
   <TheHeader></TheHeader>
   <div class="container" id="index">
-    <div ref="sceneRef" class="three-container"></div>
+    <div ref="sceneRef" class="three-container">
+      <div class="logo"><img src="/img/logo.png" alt="">
+        <div class="icon play" @click="videoPlaying=true" v-show="!videoPlaying && loadingPercent > 99.9"><el-icon><VideoPlay /></el-icon></div>
+        <div class="icon pause" @click="videoPlaying=false" v-show="videoPlaying && loadingPercent > 99.9"><el-icon><VideoPause /></el-icon></div>
+      </div>
+      <div class="loadingWrapper" v-if="loadingPercent < 100">
+        <div class="loadingBar" :style="{ width: `${loadingPercent}%` }"></div>
+        <div class="loadingText">{{ loadingPercent.toFixed(1) }}%</div>
+      </div>
+    </div>
   <about id="about"></about>
   <experience  id="experience"></experience>
   <skill id="skill"></skill>
@@ -14,53 +23,50 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import * as THREE from "three";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+// import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import {VideoPause,VideoPlay} from '@element-plus/icons-vue'
+
+const videoPlaying = ref(false);
 
 const sceneRef = ref<HTMLDivElement | null>(null);
 
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer;
-let textOffset:number
-let textWidth:number
-let text1Size:number
-let text2Size:number
+let deskModel: THREE.Object3D | null = null;
 // let controls: OrbitControls;
-let meshes:any
-let mixer:any
+
 let raycaster: THREE.Raycaster;
 let mouse: THREE.Vector2;
-let intersects: any[];
-let chairGroup:any
-let deskModel: THREE.Object3D | null = null;
+
+let mixer: THREE.AnimationMixer;
 let actionChair:THREE.AnimationAction
 let actionChairPlaying=false
+let isChairAnimating = false;
+
 let actionComputer:THREE.AnimationAction
 let actionComputerPlaying=false
+let isComputerAnimating = false;
+
 let actionCabinet1:THREE.AnimationAction
 let actionCabinet2:THREE.AnimationAction
 let actionCabinet3:THREE.AnimationAction
 let actionCabinet4:THREE.AnimationAction
 let actionCabinets:THREE.AnimationAction[]
 let actionCabinetPlaying=false
-let isChairAnimating = false;
-let isComputerAnimating = false;
 let isCabinetAnimating = false;
 
 const gltfLoader = new GLTFLoader();
+const loadingPercent = ref(0);
 function loadGLTF() {
   if (deskModel) return;
-  const gui=new GUI()
   gltfLoader.load(
-  "/home2.glb", 
+  "/blog/home.glb", 
   (gltf) => {
     deskModel = gltf.scene;
     deskModel.position.set(0, -8.4, 74); 
-    deskModel.rotation.set(0, 1, 0);
     scene.add(deskModel);
     mixer=  new THREE.AnimationMixer(deskModel)
     mixer.addEventListener('finished', (event:any) => {
@@ -86,13 +92,18 @@ function loadGLTF() {
     actionCabinet2 = mixer.clipAction(gltf.animations[37]);
     actionCabinet3 = mixer.clipAction(gltf.animations[38]);
     actionCabinet4 = mixer.clipAction(gltf.animations[39]);
-    actionCabinets = [actionCabinet1, actionCabinet2, actionCabinet2, actionCabinet4];
+    actionCabinets = [actionCabinet1, actionCabinet2, actionCabinet3, actionCabinet4];
     actionCabinets.forEach(action => {
       action.setLoop(THREE.LoopOnce, 1);
       action.clampWhenFinished = true; 
     });
 
-  }
+  },
+    (xhr) => {
+      if (xhr.total) {
+      loadingPercent.value = (xhr.loaded / xhr.total) * 100;
+    }
+    },
 );
 }
 
@@ -119,85 +130,7 @@ function init() {
   mouse = new THREE.Vector2();
   raycaster.far = Infinity;
 
-  const gui = new GUI();
   loadGLTF()
-  // initTextSize()
-  // const loader = new FontLoader();
-  // loader.load("/blog/font/gentilis_bold.typeface.json", async (font) => {
-  //   const text = "Hello,I'm Andy";
-  //   const text2 = "A Frontend Developer";
-  //   // const gui = new GUI();
-
-  //   const material = new THREE.MeshStandardMaterial({
-  //     color: 0xffffff,
-  //     metalness: 0.5,
-  //     roughness: 0.5,
-  //   });
-
-  //   const material2 = new THREE.MeshStandardMaterial({
-  //     color: 0x32cd32,
-  //     metalness: 0.5,
-  //     roughness: 0.5,
-  //   });
-
-  //   async function createText(
-  //     text: string,
-  //     material: THREE.MeshStandardMaterial,
-  //     size: number,
-  //     yOffset :number
-  //   ) {
-  //     meshes = [];
-
-  //     for (let i = 0; i < text.length; i++) {
-  //       const char = text[i];
-  //       if (char === " ") {
-  //         meshes.push({ mesh: null, width: textWidth });
-  //         continue;
-  //       }
-
-  //       const geometry = new TextGeometry(char, {
-  //         font: font,
-  //         size: size,
-  //         depth:5,
-  //         bevelThickness: 2,
-  //         bevelSize: 1.5,
-  //         bevelEnabled: true,
-  //       });
-
-  //       geometry.computeBoundingBox();
-  //       const boundingBox = geometry.boundingBox;
-  //       if (!boundingBox) continue;
-
-  //       const charWidth = boundingBox.max.x - boundingBox.min.x;
-  //       const mesh = new THREE.Mesh(geometry, material);
-  //       mesh.rotateX(0.15);
-  //       mesh.position.z = 0;
-  //       mesh.position.y = yOffset;
-
-  //       scene.add(mesh);
-  //       meshes.push({ mesh, width: charWidth });
-
-  //       // 計算總寬度，確保文字置中
-  //       let totalWidth = meshes.reduce((sum:any, obj:any) => sum + obj.width, 0);
-  //       let centerOffset = totalWidth / 2;
-
-  //       // 重新排列所有字母的位置，使其置中
-  //       let offsetX = -centerOffset;
-  //       for (let j = 0; j < meshes.length; j++) {
-  //         if (meshes[j].mesh) {
-  //           meshes[j].mesh!.position.x = offsetX;
-  //         }
-  //         offsetX += meshes[j].width;
-  //       }
-
-  //       await new Promise((resolve) => setTimeout(resolve, 75));
-  //     }
-  //   }
-
-  //   await createText(text, material, text1Size,120);
-  //   await createText(text2, material2, text2Size, 60);
-  // });
-
   const light = new THREE.DirectionalLight(0xffffff, 5);
   light.position.set(-300, 100, 50);
   scene.add(light);
@@ -205,22 +138,45 @@ function init() {
   scene.add(light2)
   // controls = new OrbitControls(camera, renderer.domElement);
   requestAnimationFrame(animate);
-  window.addEventListener('click',onMouseClick)
+  window.addEventListener('click',handleClickOrTouch)
+  window.addEventListener('touchstart', handleClickOrTouch)
   window.addEventListener('mousemove',onMouseMove)
 }
 
 function animate() {
   requestAnimationFrame(animate)
   if (deskModel) {
-    deskModel.rotation.y += 0.001;
+    if(videoPlaying.value){
+      deskModel.rotation.y += 0.005;
+    }
     mixer.update(0.01);
   }
   render();
 }
 
-function onMouseClick(event: MouseEvent) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+function getEventCoords(event: MouseEvent | TouchEvent, canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect();
+  let clientX = 0;
+  let clientY = 0;
+
+  if (event instanceof MouseEvent) {
+    clientX = event.clientX;
+    clientY = event.clientY;
+  } else if (event instanceof TouchEvent && event.touches.length > 0) {
+    clientX = event.touches[0].clientX;
+    clientY = event.touches[0].clientY;
+  }
+
+  return {
+    x: ((clientX - rect.left) / rect.width) * 2 - 1,
+    y: -((clientY - rect.top) / rect.height) * 2 + 1,
+  };
+}
+
+function handleClickOrTouch(event: MouseEvent | TouchEvent) {
+  const { x, y } = getEventCoords(event, renderer.domElement);
+  mouse.x = x;
+  mouse.y = y;
   raycaster.setFromCamera(mouse, camera);
 
   if(!deskModel)return
@@ -239,8 +195,9 @@ function onMouseClick(event: MouseEvent) {
 }
 
 function onMouseMove(event: MouseEvent) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  const { x, y } = getEventCoords(event, renderer.domElement);
+  mouse.x = x;
+  mouse.y = y;
   raycaster.setFromCamera(mouse, camera);
 
   if(!deskModel)return
@@ -322,7 +279,6 @@ function toggleCabinetAnimation() {
   }
 }
 
-
 function render() {
   renderer.render(scene, camera);
 }
@@ -337,30 +293,6 @@ function onWindowResize() {
   renderer.setSize(width, height);
 }
 
-function initTextSize() {
-  if(window.innerWidth < 414){
-    textOffset = -30
-    textWidth = 5;
-    text1Size = 30;
-    text2Size = 10;
-  } else if (window.innerWidth < 768) {
-    textOffset = -50
-    textWidth = 5;
-    text1Size = 40;
-    text2Size = 20;
-  } else if (window.innerWidth < 1024) {
-    textOffset = -80
-    textWidth = 15;
-    text1Size = 70;
-    text2Size = 50;
-  } else {
-    textWidth = 20;
-    textOffset = -100
-    text1Size = 70;
-    text2Size = 40;
-  }
-}
-
 onMounted(() => {
   init();
   window.addEventListener("resize", onWindowResize);
@@ -368,7 +300,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", onWindowResize);
-  window.removeEventListener("click", onMouseClick);
+  window.removeEventListener("click", handleClickOrTouch);
+  window.removeEventListener("touchstart", handleClickOrTouch);
   window.removeEventListener('mousemove',onMouseMove)
 
 });
@@ -382,16 +315,127 @@ onBeforeUnmount(() => {
 .three-container {
   width: 100%;
   height: 100vh;
+  position: relative;
   overflow: hidden;
+}
+.logo{
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  max-width: 600px;
+}
+.logo img{
+  width: 100%;
+  height: auto;
+}
+.icon{
+  position: absolute;
+  color: white;
+  font-size: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icon:hover{
+  cursor: pointer;
+}
+.icon.play{
+  background: linear-gradient(
+    to bottom,
+    rgb(0, 180, 0),
+    rgb(0, 100, 0),
+    rgb(0, 180, 0)
+  );
+}
+.icon.pause{
+  background: linear-gradient(
+    to bottom,
+    rgb(220, 0, 0),
+    rgb(120, 0, 0),
+    rgb(220, 0, 0)
+  );
+}
+.loadingWrapper{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 25px;
+  border:1px solid white;
+}
+.loadingBar {
+  height: 100%;
+  background-color: #42b883; 
+  transition: width 0.2s ease;
+}
+.loadingText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
 }
 @media screen and (max-width: 1024px){
   .three-container {
     height: 80vh;
   }
+  .icon{
+    font-size: 40px;
+    width: 50px;
+    height: 50px;
+  }
 }
 @media screen and (max-width: 768px){
   .three-container {
     height: 70vh;
+  }
+  .icon{
+    font-size: 30px;
+    width: 40px;
+    height: 40px;
+  }
+  .logo{
+    top: 30%;
+    transform: translate(-50%, -30%);
+  }
+  .loadingWrapper{
+    width: 200px;
+    height: 20px;
+  }
+  
+}
+@media screen and (max-width: 600px){
+  .three-container {
+    height: 50vh;
+  }
+}
+@media screen and (max-width: 414px){
+  .three-container {
+    height: 40vh;
+  }
+  .logo{
+    top: 33%;
+    transform: translate(-50%, -33%);
+  }
+  .icon{
+    font-size: 15px;
+    width: 25px;
+    height: 25px;
+  }
+  .loadingWrapper{
+    width: 150px;
+    height: 15px;
+  }
+  .loadingText{
+    font-size: 12px;
   }
   
 }
